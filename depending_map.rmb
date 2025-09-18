@@ -1,0 +1,17 @@
+(第 2 层: 主驱动)                  nyanc
+                                            |
+      (第 1 层: 工具链)                     v
+      analyzer -----> parser -----> lexer
+          |               |             |
+          |               |             v
+          +-------------> hir <---------+
+                          |
+      (第 0 层: 核心原语)   v
+                      nyanc_core
+
+
+analyzer 依赖 hir: 这是你问题的核心。analyzer 需要定义 TypeMap，而 TypeMap 的值是 hir::Type，键是 hir::HirId。所以 analyzer 必须知道 hir 的内容。这是一个从 analyzer 指向 hir 的箭头 ->。
+
+hir 不依赖 analyzer: hir Crate 是一个纯粹的“数据定义”库。它只负责定义 hir::Expr, hir::Type 这些结构长什么样。它完全不知道、也不关心谁会使用它。所以，没有从 hir 指向 analyzer 的箭头。
+
+结论: 因为依赖是单向的 (analyzer -> hir)，所以不存在循环依赖。我们之前遇到的所有权问题，是函数内部的逻辑缺陷，而这次我们讨论的是 Crate 之间的架构，我们目前的架构是清晰和安全的。
