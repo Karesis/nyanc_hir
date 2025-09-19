@@ -3,21 +3,32 @@ use nyanc_core::Span;
 
 #[derive(Debug, Clone)]
 pub struct Stmt {
-    pub hir_id: HirId,
     pub kind: StmtKind,
     pub span: Span,
 }
 
 #[derive(Debug, Clone)]
 pub enum StmtKind {
-    Let { var_def_id: DefId, initializer: Expr },
-    Var { var_def_id: DefId, var_type: Type, initializer: Option<Expr> },
-    Return { value: Option<Expr> },
-    Block(Block),
-    Expression(Expr),
+    Let { 
+        var_def_id: DefId, 
+        initializer: HirId<Expr> 
+    },
+
+    Var { 
+        var_def_id: DefId, 
+        var_type: HirId<Type>, 
+        initializer: Option<HirId<Expr>> 
+    },
+
+    Return { 
+        value: Option<HirId<Expr>> 
+    },
+
+    Block(HirId<Block>),
+    Expression(HirId<Expr>),
 }
 
 #[derive(Debug, Clone)]
 pub struct Block {
-    pub stmts: Vec<Stmt>,
+    pub stmts: Vec<HirId<Stmt>>,
 }

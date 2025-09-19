@@ -1,4 +1,4 @@
-use crate::DefId;
+use crate::{DefId, HirId};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type {
@@ -6,6 +6,6 @@ pub enum Type {
     Bool,
     Unit,
     Struct(DefId), // 直接指向结构体的定义 ID
-    Pointer(Box<Type>),
+    Pointer(HirId<Type>),
     Error, // 一个特殊的类型，用于在出错后继续进行类型检查
 }
